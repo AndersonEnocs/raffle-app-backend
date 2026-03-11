@@ -7,6 +7,10 @@ const APP_NAME = 'app_name';
 const CLOUDINARY_CLOUD_NAME = 'cloudinary_cloud_name';
 const CLOUDINARY_API_KEY = 'cloudinary_api_key';
 const CLOUDINARY_API_SECRET = 'cloudinary_api_secret';
+const STRIPE_SECRET_KEY = 'stripe_secret_key';
+const STRIPE_WEBHOOK_SECRET = 'stripe_webhook_secret';
+const STRIPE_SUCCESS_URL = 'stripe_success_url';
+const STRIPE_CANCEL_URL = 'stripe_cancel_url';
 
 export class SettingsMapper {
   static mapSettings(listSettings: AppSettings[]) {
@@ -31,6 +35,18 @@ export class SettingsMapper {
           break;
         case CLOUDINARY_API_SECRET:
           settings.cloudinaryApiSecret = setting.value;
+          break;
+        case STRIPE_SECRET_KEY:
+          settings.stripeSecretKey = setting.value;
+          break;
+        case STRIPE_WEBHOOK_SECRET:
+          settings.stripeWebhookSecret = setting.value;
+          break;
+        case STRIPE_SUCCESS_URL:
+          settings.stripeSuccessUrl = setting.value;
+          break;
+        case STRIPE_CANCEL_URL:
+          settings.stripeCancelUrl = setting.value;
           break;
       }
     }

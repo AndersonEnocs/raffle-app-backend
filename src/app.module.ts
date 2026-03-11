@@ -5,6 +5,8 @@ import { DefaultSettingsModule } from './default-settings/default-settings.modul
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AdminModule } from './admin/admin.module';
 import { RaffleModule } from './raffle/raffle.module';
+import { PaymentModule } from './payment/payment.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { RaffleModule } from './raffle/raffle.module';
     CloudinaryModule,
     AdminModule,
     RaffleModule,
+    PaymentModule,
+    TicketModule,
   ],
 })
 export class AppModule {}

@@ -1,7 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiResponseDto } from '../../shared/dtos/api-response.dto';
 import { Raffle } from '../schemas/raffle.schema';
 import { RaffleService } from '../services/raffle.service';
+import { RaffleAvailability } from '../utilities/raffle-availability.enum';
 
 @Controller('raffles')
 export class RafflePublicController {
@@ -14,6 +15,20 @@ export class RafflePublicController {
       statusCode: 700,
       message: 'Latest raffle fetched successfully.',
       data: raffle,
+    };
+  }
+
+  @Get(':id/availability')
+  async getAvailability(
+    @Param('id') id: string,
+  ): Promise<
+    ApiResponseDto<RaffleAvailability>
+  > {
+    const data = await this.raffleService.getAvailability(id);
+    return {
+      statusCode: 700,
+      message: 'Raffle availability fetched successfully.',
+      data,
     };
   }
 }

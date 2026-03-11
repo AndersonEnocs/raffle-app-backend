@@ -15,6 +15,17 @@ export class Raffle {
   @Prop({ required: true, min: 1 })
   totalTickets: number;
 
+  @Prop({ required: true, min: 0 })
+  ticketsAvailable: number;
+
+  @Prop({ required: true, min: 0, default: 0 })
+  ticketsSold: number;
+
+  // Números actualmente tomados (reservados o vendidos).
+  // En el futuro, el flujo de compra/reserva irá llenando este arreglo.
+  @Prop({ type: [Number], default: [] })
+  takenNumbers: number[];
+
   @Prop({ type: [String], default: [] })
   images: string[];
 }

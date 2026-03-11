@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CloudinaryService } from '../../cloudinary/services/cloudinary.service';
 import { CreateRaffleDto } from '../dtos/create-raffle.dto';
 import { Raffle, RaffleDocument } from '../schemas/raffle.schema';
+import { RaffleAvailability, RaffleAvailabilityField } from '../utilities/raffle-availability.enum';
 
 @Injectable()
 export class RaffleService {
@@ -32,8 +33,10 @@ export class RaffleService {
     return new this.raffleModel({
       title,
       description: dto.description?.trim(),
-       price: dto.price,
+      price: dto.price,
       totalTickets: dto.totalTickets,
+      ticketsAvailable: dto.totalTickets,
+      ticketsSold: 0,
       images: imageUrls,
     }).save();
   }
@@ -42,6 +45,24 @@ export class RaffleService {
     const raffle = await this.raffleModel.findOne().sort({ createdAt: -1 }).lean();
     if (!raffle) throw new NotFoundException('No raffles found.');
     return raffle as any;
+  }
+
+  async getAvailability(raffleId: string): Promise<RaffleAvailability> {
+    const raffle = await this.raffleModel
+      .findById(raffleId)
+      .select([
+        RaffleAvailabilityField.TICKETS_AVAILABLE,
+        RaffleAvailabilityField.TICKETS_SOLD,
+        RaffleAvailabilityField.TOTAL_TICKETS,
+        RaffleAvailabilityField.TAKEN_NUMBERS,
+      ])
+      .lean();
+
+    if (!raffle) {
+      throw new NotFoundException('Raffle not found.');
+    }
+
+    return raffle as RaffleAvailability;
   }
 }
 

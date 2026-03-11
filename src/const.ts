@@ -8,6 +8,12 @@ export const constantsAppSettings = {
   // App info
   appName: '',
 
+  // Payments
+  stripeSecretKey: '',
+  stripeWebhookSecret: '',
+  stripeSuccessUrl: '',
+  stripeCancelUrl: '',
+
   // Cloudinary
   cloudinaryCloudName: '',
   cloudinaryApiKey: '',
