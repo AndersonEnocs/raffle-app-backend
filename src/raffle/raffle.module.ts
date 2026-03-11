@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Raffle, RaffleSchema } from './schemas/raffle.schema';
 import { RaffleService } from './services/raffle.service';
 import { RaffleController } from './controllers/raffle.controller';
+import { RafflePublicController } from './controllers/raffle-public.controller';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { AdminModule } from '../admin/admin.module';
 
@@ -12,7 +13,7 @@ import { AdminModule } from '../admin/admin.module';
     CloudinaryModule,
     forwardRef(() => AdminModule),
   ],
-  controllers: [RaffleController],
+  controllers: [RaffleController, RafflePublicController],
   providers: [RaffleService],
 })
 export class RaffleModule {}

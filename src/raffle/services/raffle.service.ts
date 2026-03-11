@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CloudinaryService } from '../../cloudinary/services/cloudinary.service';
@@ -36,6 +36,12 @@ export class RaffleService {
       totalTickets: dto.totalTickets,
       images: imageUrls,
     }).save();
+  }
+
+  async getLatest(): Promise<Raffle> {
+    const raffle = await this.raffleModel.findOne().sort({ createdAt: -1 }).lean();
+    if (!raffle) throw new NotFoundException('No raffles found.');
+    return raffle as any;
   }
 }
 
