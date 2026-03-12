@@ -12,5 +12,23 @@ export class QueryRaffle {
       { $limit: Math.max(1, Math.min(limit, 100)) },
     ];
   }
+
+  
+  static withPlayers(raffleId: string): PipelineStage[] {
+    return [
+      { $match: { _id: new Types.ObjectId(raffleId) } },
+      {
+        $lookup: {
+          from: 'tickets',
+          let: { rid: '$_id' },
+          pipeline: [
+            { $match: { $expr: { $and: [ { $eq: ['$raffleId', '$$rid'] }, { $eq: ['$status', 'PAID'] } ] } } },
+            { $project: { name: 1, phone: 1, numbers: 1, totalAmount: 1, currency: 1, createdAt: 1 } },
+          ],
+          as: 'players',
+        },
+      },
+    ];
+  }
 }
 

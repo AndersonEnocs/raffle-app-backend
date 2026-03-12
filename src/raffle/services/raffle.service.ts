@@ -5,6 +5,7 @@ import { CloudinaryService } from '../../cloudinary/services/cloudinary.service'
 import { CreateRaffleDto } from '../dtos/create-raffle.dto';
 import { Raffle, RaffleDocument } from '../schemas/raffle.schema';
 import { RaffleAvailability, RaffleAvailabilityField } from '../utilities/raffle-availability.enum';
+import { QueryRaffle } from '../queries/query-raffle';
 
 @Injectable()
 export class RaffleService {
@@ -45,6 +46,16 @@ export class RaffleService {
     const raffle = await this.raffleModel.findOne().sort({ createdAt: -1 }).lean();
     if (!raffle) throw new NotFoundException('No raffles found.');
     return raffle as any;
+  }
+
+  async getWithPlayers(raffleId: string) {
+    const docs = await this.raffleModel.aggregate(
+      QueryRaffle.withPlayers(raffleId),
+    );
+    if (!docs.length) {
+      throw new NotFoundException('Raffle not found.');
+    }
+    return docs[0];
   }
 
   async getAvailability(raffleId: string): Promise<RaffleAvailability> {

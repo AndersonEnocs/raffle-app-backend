@@ -31,5 +31,15 @@ export class RafflePublicController {
       data,
     };
   }
+
+  @Get(':id/players')
+  async getPlayers(@Param('id') id: string) {
+    const raffle = await this.raffleService.getWithPlayers(id);
+    return {
+      statusCode: 700,
+      message: 'Raffle with players fetched successfully.',
+      data: raffle,
+    };
+  }
 }
 

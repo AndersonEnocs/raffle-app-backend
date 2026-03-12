@@ -6,6 +6,7 @@ import { Ticket, TicketDocument, TicketStatus } from '../schemas/ticket.schema';
 import { PurchaseTicketsDto } from '../dtos/purchase-tickets.dto';
 import { RaffleAvailabilityField } from '../../raffle/utilities/raffle-availability.enum';
 import { StripeService } from '../../payment/services/stripe.service';
+import { QueryTicket } from '../queries/query-ticket';
 
 @Injectable()
 export class TicketService {
@@ -14,6 +15,14 @@ export class TicketService {
     @InjectModel(Raffle.name) private readonly raffleModel: Model<RaffleDocument>,
     private readonly stripeService: StripeService,
   ) {}
+
+
+  async getPaidPlayers(raffleId: string) {
+    const tickets = await this.ticketModel.aggregate(
+      QueryTicket.paidByRaffle(raffleId),
+    );
+    return tickets;
+  }
 
   async purchaseTickets(raffleId: string, dto: PurchaseTicketsDto) {
     const raffle = await this.raffleModel.findById(raffleId).lean();
