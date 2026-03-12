@@ -11,8 +11,18 @@ async function bootstrap() {
   if (!cachedApp) {
     const app = await NestFactory.create(AppModule);
 
+    // allow any origin and mirror it back to support credentials requests.  
+    // using a callback avoids the `"*"` vs credentials restriction and lets us
+    // dynamically accept whatever origin the browser sends.  in production you
+    // could replace this with a whitelist from an env variable if you want tighter
+    // control, but for development / cross‑platform clients (ionic, electron, etc.)
+    // this configuration will never trigger a cors failure.
     app.enableCors({
-      origin: true,
+      origin: (origin, callback) => {
+        // origin may be undefined for non-browser clients (Postman, curl), so we
+        // just allow them as well.
+        callback(null, true);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: [
@@ -21,9 +31,6 @@ async function bootstrap() {
         'Accept',
         'Origin',
         'X-Requested-With',
-        'Access-Control-Allow-Origin',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Methods',
       ],
       exposedHeaders: ['Authorization'],
       preflightContinue: false,
@@ -54,10 +61,17 @@ async function bootstrap() {
 }
 
 if (process.env.NODE_ENV !== 'production') {
+  // When running locally (e.g. via `npm run start` or `nest start`),
+  // start a traditional HTTP server. In production (Vercel) we export
+  // a handler instead and rely on serverless invocation, so we skip
+  // this.
   const startLocal = async () => {
     const app = await NestFactory.create(AppModule);
     await app.listen(process.env.PORT ?? 3000);
   };
+
+  // invoke immediately so the process actually listens on a port
+  startLocal();
 }
 
 export default async (req: any, res: any) => {
