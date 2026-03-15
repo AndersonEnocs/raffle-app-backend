@@ -4,8 +4,8 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
+  Matches,
   Min,
 } from 'class-validator';
 
@@ -16,7 +16,10 @@ export class PurchaseTicketsDto {
 
   @IsString()
   @IsOptional()
-  @IsPhoneNumber('VE', { message: 'phone must be a valid phone number' })
+  @Matches(/^\+\d{7,15}$/, {
+    message:
+      'phone must be a valid international number in E.164 format, e.g. +15555551234',
+  })
   phone?: string;
 
   @IsArray()

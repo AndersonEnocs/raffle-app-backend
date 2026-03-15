@@ -47,7 +47,14 @@ export class TicketService {
     }
 
     const count = uniqueNumbers.length;
-    const totalAmount = raffle.price * count;
+    let totalAmount = raffle.price * count;
+
+    const BULK_DISCOUNT_THRESHOLD = 10;
+    const BULK_DISCOUNT_FACTOR = 0.5;
+    if (count > BULK_DISCOUNT_THRESHOLD) {
+      totalAmount = totalAmount * BULK_DISCOUNT_FACTOR;
+    }
+
     const amountInCents = Math.round(totalAmount * 100);
     const currency = 'usd';
 
